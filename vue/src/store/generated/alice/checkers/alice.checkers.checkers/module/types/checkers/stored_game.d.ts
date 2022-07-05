@@ -12,6 +12,7 @@ export interface StoredGame {
     beforeId: string;
     /** Pertains to the FIFO. Toward tail. */
     afterId: string;
+    deadline: string;
 }
 export declare const StoredGame: {
     encode(message: StoredGame, writer?: Writer): Writer;
