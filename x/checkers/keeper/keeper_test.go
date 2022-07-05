@@ -1,8 +1,9 @@
-package keeper
+package keeper_test
 
 import (
 	"testing"
 
+	"github.com/alice/checkers/x/checkers/keeper"
 	"github.com/alice/checkers/x/checkers/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
@@ -15,7 +16,7 @@ import (
 	tmdb "github.com/tendermint/tm-db"
 )
 
-func setupKeeper(t testing.TB) (*Keeper, sdk.Context) {
+func setupKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 	storeKey := sdk.NewKVStoreKey(types.StoreKey)
 	memStoreKey := storetypes.NewMemoryStoreKey(types.MemStoreKey)
 
@@ -26,7 +27,7 @@ func setupKeeper(t testing.TB) (*Keeper, sdk.Context) {
 	require.NoError(t, stateStore.LoadLatestVersion())
 
 	registry := codectypes.NewInterfaceRegistry()
-	keeper := NewKeeper(
+	keeper := keeper.NewKeeper(
 		codec.NewProtoCodec(registry),
 		storeKey,
 		memStoreKey,
