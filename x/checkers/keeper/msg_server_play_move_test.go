@@ -87,12 +87,13 @@ func TestPlayMoveSavedGame(t *testing.T) {
 	game1, found := keeper.GetStoredGame(sdk.UnwrapSDKContext(context), "1")
 	require.True(t, found)
 	require.EqualValues(t, types.StoredGame{
-		Creator: alice,
-		Index:   "1",
-		Game:    "*b*b*b*b|b*b*b*b*|***b*b*b|**b*****|********|r*r*r*r*|*r*r*r*r|r*r*r*r*",
-		Turn:    "r",
-		Red:     bob,
-		Black:   carol,
+		Creator:   alice,
+		Index:     "1",
+		Game:      "*b*b*b*b|b*b*b*b*|***b*b*b|**b*****|********|r*r*r*r*|*r*r*r*r|r*r*r*r*",
+		Turn:      "r",
+		Red:       bob,
+		Black:     carol,
+		MoveCount: 1,
 	}, game1)
 }
 
@@ -178,12 +179,13 @@ func TestPlayMove2SavedGame(t *testing.T) {
 	game1, found := keeper.GetStoredGame(sdk.UnwrapSDKContext(context), "1")
 	require.True(t, found)
 	require.EqualValues(t, types.StoredGame{
-		Creator: alice,
-		Index:   "1",
-		Game:    "*b*b*b*b|b*b*b*b*|***b*b*b|**b*****|*r******|**r*r*r*|*r*r*r*r|r*r*r*r*",
-		Turn:    "b",
-		Red:     bob,
-		Black:   carol,
+		Creator:   alice,
+		Index:     "1",
+		Game:      "*b*b*b*b|b*b*b*b*|***b*b*b|**b*****|*r******|**r*r*r*|*r*r*r*r|r*r*r*r*",
+		Turn:      "b",
+		Red:       bob,
+		Black:     carol,
+		MoveCount: 2,
 	}, game1)
 }
 
@@ -257,11 +259,12 @@ func TestPlayMove3SavedGame(t *testing.T) {
 	game1, found := keeper.GetStoredGame(sdk.UnwrapSDKContext(context), "1")
 	require.True(t, found)
 	require.EqualValues(t, types.StoredGame{
-		Creator: alice,
-		Index:   "1",
-		Game:    "*b*b*b*b|b*b*b*b*|***b*b*b|********|********|b*r*r*r*|*r*r*r*r|r*r*r*r*",
-		Turn:    "r",
-		Red:     bob,
-		Black:   carol,
+		Creator:   alice,
+		Index:     "1",
+		Game:      "*b*b*b*b|b*b*b*b*|***b*b*b|********|********|b*r*r*r*|*r*r*r*r|r*r*r*r*",
+		Turn:      "r",
+		Red:       bob,
+		Black:     carol,
+		MoveCount: 3,
 	}, game1)
 }

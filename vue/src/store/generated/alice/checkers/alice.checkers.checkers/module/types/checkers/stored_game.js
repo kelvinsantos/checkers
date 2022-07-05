@@ -1,7 +1,8 @@
 /* eslint-disable */
-import { Writer, Reader } from 'protobufjs/minimal';
+import * as Long from 'long';
+import { util, configure, Writer, Reader } from 'protobufjs/minimal';
 export const protobufPackage = 'alice.checkers.checkers';
-const baseStoredGame = { creator: '', index: '', game: '', turn: '', red: '', black: '' };
+const baseStoredGame = { creator: '', index: '', game: '', turn: '', red: '', black: '', moveCount: 0 };
 export const StoredGame = {
     encode(message, writer = Writer.create()) {
         if (message.creator !== '') {
@@ -21,6 +22,9 @@ export const StoredGame = {
         }
         if (message.black !== '') {
             writer.uint32(50).string(message.black);
+        }
+        if (message.moveCount !== 0) {
+            writer.uint32(56).uint64(message.moveCount);
         }
         return writer;
     },
@@ -48,6 +52,9 @@ export const StoredGame = {
                     break;
                 case 6:
                     message.black = reader.string();
+                    break;
+                case 7:
+                    message.moveCount = longToNumber(reader.uint64());
                     break;
                 default:
                     reader.skipType(tag & 7);
@@ -94,6 +101,12 @@ export const StoredGame = {
         else {
             message.black = '';
         }
+        if (object.moveCount !== undefined && object.moveCount !== null) {
+            message.moveCount = Number(object.moveCount);
+        }
+        else {
+            message.moveCount = 0;
+        }
         return message;
     },
     toJSON(message) {
@@ -104,6 +117,7 @@ export const StoredGame = {
         message.turn !== undefined && (obj.turn = message.turn);
         message.red !== undefined && (obj.red = message.red);
         message.black !== undefined && (obj.black = message.black);
+        message.moveCount !== undefined && (obj.moveCount = message.moveCount);
         return obj;
     },
     fromPartial(object) {
@@ -144,6 +158,33 @@ export const StoredGame = {
         else {
             message.black = '';
         }
+        if (object.moveCount !== undefined && object.moveCount !== null) {
+            message.moveCount = object.moveCount;
+        }
+        else {
+            message.moveCount = 0;
+        }
         return message;
     }
 };
+var globalThis = (() => {
+    if (typeof globalThis !== 'undefined')
+        return globalThis;
+    if (typeof self !== 'undefined')
+        return self;
+    if (typeof window !== 'undefined')
+        return window;
+    if (typeof global !== 'undefined')
+        return global;
+    throw 'Unable to locate global object';
+})();
+function longToNumber(long) {
+    if (long.gt(Number.MAX_SAFE_INTEGER)) {
+        throw new globalThis.Error('Value is larger than Number.MAX_SAFE_INTEGER');
+    }
+    return long.toNumber();
+}
+if (util.Long !== Long) {
+    util.Long = Long;
+    configure();
+}

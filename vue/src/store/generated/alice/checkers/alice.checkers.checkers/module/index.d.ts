@@ -3,6 +3,7 @@ import { OfflineSigner, EncodeObject } from "@cosmjs/proto-signing";
 import { Api } from "./rest";
 import { MsgPlayMove } from "./types/checkers/tx";
 import { MsgCreateGame } from "./types/checkers/tx";
+import { MsgRejectGame } from "./types/checkers/tx";
 export declare const MissingWalletError: Error;
 interface TxClientOptions {
     addr: string;
@@ -15,6 +16,7 @@ declare const txClient: (wallet: OfflineSigner, { addr: addr }?: TxClientOptions
     signAndBroadcast: (msgs: EncodeObject[], { fee, memo }?: SignAndBroadcastOptions) => Promise<import("@cosmjs/stargate").BroadcastTxResponse>;
     msgPlayMove: (data: MsgPlayMove) => EncodeObject;
     msgCreateGame: (data: MsgCreateGame) => EncodeObject;
+    msgRejectGame: (data: MsgRejectGame) => EncodeObject;
 }>;
 interface QueryClientOptions {
     addr: string;
