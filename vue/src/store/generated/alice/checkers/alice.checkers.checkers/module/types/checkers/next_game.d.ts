@@ -3,6 +3,10 @@ export declare const protobufPackage = "alice.checkers.checkers";
 export interface NextGame {
     creator: string;
     idValue: number;
+    /** Will contain the index of the game at the head. */
+    fifoHead: string;
+    /** Will contain the index of the game at the tail. */
+    fifoTail: string;
 }
 export declare const NextGame: {
     encode(message: NextGame, writer?: Writer): Writer;

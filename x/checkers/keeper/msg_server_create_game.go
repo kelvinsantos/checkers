@@ -27,6 +27,8 @@ func (k msgServer) CreateGame(goCtx context.Context, msg *types.MsgCreateGame) (
 		Red:       msg.Red,
 		Black:     msg.Black,
 		MoveCount: 0,
+		BeforeId:  types.NoFifoIdKey,
+		AfterId:   types.NoFifoIdKey,
 	}
 
 	err := storedGame.Validate()
@@ -34,6 +36,7 @@ func (k msgServer) CreateGame(goCtx context.Context, msg *types.MsgCreateGame) (
 		return nil, err
 	}
 
+	k.Keeper.SendToFifoTail(ctx, &storedGame, &nextGame)
 	k.Keeper.SetStoredGame(ctx, storedGame)
 
 	nextGame.IdValue++
