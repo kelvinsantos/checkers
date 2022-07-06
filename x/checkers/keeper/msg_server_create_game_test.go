@@ -341,3 +341,17 @@ func (suite *IntegrationTestSuite) TestCreate3GamesGetAll() {
 		Wager:     25,
 	}, games[2])
 }
+
+func (suite *IntegrationTestSuite) TestCreate1GameConsumedGas() {
+	suite.setupSuiteWithBalances()
+	goCtx := sdk.WrapSDKContext(suite.ctx)
+	gasBefore := suite.ctx.GasMeter().GasConsumed()
+	suite.msgServer.CreateGame(goCtx, &types.MsgCreateGame{
+		Creator: alice,
+		Red:     bob,
+		Black:   carol,
+		Wager:   15,
+	})
+	gasAfter := suite.ctx.GasMeter().GasConsumed()
+	suite.Require().Equal(uint64(13_190+10), gasAfter-gasBefore)
+}

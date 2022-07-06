@@ -81,3 +81,15 @@ func (suite *IntegrationTestSuite) TestRejectGameByRedOneMoveEmitted() {
 		{Key: "amount", Value: "11stake"},
 	}, transferEvent.Attributes[transferEventCount:])
 }
+
+func (suite *IntegrationTestSuite) TestRejectGameByBlackConsumedGas() {
+	suite.setupSuiteWithOneGameForRejectGame()
+	goCtx := sdk.WrapSDKContext(suite.ctx)
+	gasBefore := suite.ctx.GasMeter().GasConsumed()
+	suite.msgServer.RejectGame(goCtx, &types.MsgRejectGame{
+		Creator: carol,
+		IdValue: "1",
+	})
+	gasAfter := suite.ctx.GasMeter().GasConsumed()
+	suite.Require().Equal(uint64(6_116+0), gasAfter-gasBefore)
+}
