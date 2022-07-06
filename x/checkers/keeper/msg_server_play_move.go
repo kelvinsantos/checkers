@@ -19,6 +19,10 @@ func (k msgServer) PlayMove(goCtx context.Context, msg *types.MsgPlayMove) (*typ
 		return nil, sdkerrors.Wrapf(types.ErrGameNotFound, "game not found %s", msg.IdValue)
 	}
 
+	if storedGame.Winner != rules.PieceStrings[rules.NO_PLAYER] {
+		return nil, types.ErrGameFinished
+	}
+
 	isRed := strings.Compare(storedGame.Red, msg.Creator) == 0
 	isBlack := strings.Compare(storedGame.Black, msg.Creator) == 0
 	var player rules.Player
@@ -57,11 +61,18 @@ func (k msgServer) PlayMove(goCtx context.Context, msg *types.MsgPlayMove) (*typ
 
 	storedGame.MoveCount++
 	storedGame.Deadline = types.FormatDeadline(types.GetNextDeadline(ctx))
+	storedGame.Winner = rules.PieceStrings[game.Winner()]
+
 	nextGame, found := k.Keeper.GetNextGame(ctx)
 	if !found {
 		panic("NextGame not found")
 	}
-	k.Keeper.SendToFifoTail(ctx, &storedGame, &nextGame)
+	if storedGame.Winner == rules.PieceStrings[rules.NO_PLAYER] {
+		k.Keeper.SendToFifoTail(ctx, &storedGame, &nextGame)
+	} else {
+		k.Keeper.RemoveFromFifo(ctx, &storedGame, &nextGame)
+	}
+
 	storedGame.Game = game.String()
 	storedGame.Turn = rules.PieceStrings[game.Turn]
 	k.Keeper.SetStoredGame(ctx, storedGame)
