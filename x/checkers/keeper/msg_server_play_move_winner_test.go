@@ -120,6 +120,6 @@ func TestPlayMoveUpToWinner(t *testing.T) {
 		{Key: "IdValue", Value: "1"},
 		{Key: "CapturedX", Value: "2"},
 		{Key: "CapturedY", Value: "5"},
-		{Key: "Winner", Value: "b"},
+		{Key: "Winner", Value: "black"},
 	}, event.Attributes[6+39*7:])
 }
