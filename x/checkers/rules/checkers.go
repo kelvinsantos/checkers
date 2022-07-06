@@ -9,8 +9,8 @@ import (
 
 const (
 	BOARD_DIM = 8
-	RED       = "red"
-	BLACK     = "black"
+	RED       = "r"
+	BLACK     = "b"
 	ROW_SEP   = "|"
 )
 

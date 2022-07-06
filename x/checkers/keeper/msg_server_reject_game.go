@@ -34,6 +34,8 @@ func (k msgServer) RejectGame(goCtx context.Context, msg *types.MsgRejectGame) (
 		return nil, types.ErrCreatorNotPlayer
 	}
 
+	k.Keeper.MustRefundWager(ctx, &storedGame)
+
 	nextGame, found := k.Keeper.GetNextGame(ctx)
 	if !found {
 		panic("NextGame not found")
