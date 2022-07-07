@@ -13,6 +13,7 @@ func (suite *IntegrationTestSuite) TestCreateGame() {
 		Red:     bob,
 		Black:   carol,
 		Wager:   12,
+		Token:   sdk.DefaultBondDenom,
 	})
 	suite.Require().Nil(err)
 	suite.Require().EqualValues(types.MsgCreateGameResponse{
@@ -72,6 +73,7 @@ func (suite *IntegrationTestSuite) TestCreate1GameHasSaved() {
 		Deadline:  types.FormatDeadline(suite.ctx.BlockTime().Add(types.MaxTurnDuration)),
 		Winner:    "*",
 		Wager:     13,
+		Token:     "stake",
 	}, game1)
 }
 
@@ -125,6 +127,7 @@ func (suite *IntegrationTestSuite) TestCreate1GameEmitted() {
 			{Key: "Red", Value: bob},
 			{Key: "Black", Value: carol},
 			{Key: "Wager", Value: "15"},
+			{Key: "Token", Value: "stake"},
 		},
 	}, event)
 }
@@ -353,5 +356,5 @@ func (suite *IntegrationTestSuite) TestCreate1GameConsumedGas() {
 		Wager:   15,
 	})
 	gasAfter := suite.ctx.GasMeter().GasConsumed()
-	suite.Require().Equal(uint64(13_190+10), gasAfter-gasBefore)
+	suite.Require().Equal(uint64(13_400+10), gasAfter-gasBefore)
 }

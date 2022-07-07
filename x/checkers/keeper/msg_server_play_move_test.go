@@ -1,26 +1,20 @@
 package keeper_test
 
 import (
-	"context"
-	"testing"
-
-	"github.com/alice/checkers/x/checkers"
-	"github.com/alice/checkers/x/checkers/keeper"
 	"github.com/alice/checkers/x/checkers/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func setupMsgServerWithOneGameForPlayMove(t testing.TB) (types.MsgServer, keeper.Keeper, context.Context) {
-	k, ctx := setupKeeper(t)
-	checkers.InitGenesis(ctx, *k, *types.DefaultGenesis())
-	server := keeper.NewMsgServerImpl(*k)
-	context := sdk.WrapSDKContext(ctx)
-	server.CreateGame(context, &types.MsgCreateGame{
+func (suite *IntegrationTestSuite) setupSuiteWithOneGameForPlayMove() {
+	suite.setupSuiteWithBalances()
+	goCtx := sdk.WrapSDKContext(suite.ctx)
+	suite.msgServer.CreateGame(goCtx, &types.MsgCreateGame{
 		Creator: alice,
 		Red:     bob,
 		Black:   carol,
+		Wager:   11,
+		Token:   sdk.DefaultBondDenom,
 	})
-	return server, *k, context
 }
 
 func (suite *IntegrationTestSuite) TestPlayMove() {
@@ -372,4 +366,40 @@ func (suite *IntegrationTestSuite) TestPlayMoveConsumedGas() {
 	})
 	gasAfter := suite.ctx.GasMeter().GasConsumed()
 	suite.Require().Equal(uint64(33_230+10), gasAfter-gasBefore)
+}
+
+func (suite *IntegrationTestSuite) TestPlayMovePlayerPaidForeignToken() {
+	suite.setupSuiteWithOneGameForPlayMove()
+	goCtx := sdk.WrapSDKContext(suite.ctx)
+	suite.msgServer.CreateGame(goCtx, &types.MsgCreateGame{
+		Creator: alice,
+		Red:     bob,
+		Black:   carol,
+		Wager:   1,
+		Token:   foreignToken,
+	})
+	suite.RequireBankBalance(balAlice, alice)
+	suite.RequireBankBalance(balBob, bob)
+	suite.RequireBankBalance(balCarol, carol)
+	suite.RequireBankBalance(0, checkersModuleAddress)
+	suite.RequireBankBalanceIn(balTokenAlice, alice, foreignToken)
+	suite.RequireBankBalanceIn(balTokenBob, bob, foreignToken)
+	suite.RequireBankBalanceIn(balTokenCarol, carol, foreignToken)
+	suite.RequireBankBalanceIn(0, checkersModuleAddress, foreignToken)
+	suite.msgServer.PlayMove(goCtx, &types.MsgPlayMove{
+		Creator: carol,
+		IdValue: "2",
+		FromX:   1,
+		FromY:   2,
+		ToX:     2,
+		ToY:     3,
+	})
+	suite.RequireBankBalance(balAlice, alice)
+	suite.RequireBankBalance(balBob, bob)
+	suite.RequireBankBalance(balCarol, carol)
+	suite.RequireBankBalance(0, checkersModuleAddress)
+	suite.RequireBankBalanceIn(balTokenAlice, alice, foreignToken)
+	suite.RequireBankBalanceIn(balTokenBob, bob, foreignToken)
+	suite.RequireBankBalanceIn(balTokenCarol-1, carol, foreignToken)
+	suite.RequireBankBalanceIn(1, checkersModuleAddress, foreignToken)
 }

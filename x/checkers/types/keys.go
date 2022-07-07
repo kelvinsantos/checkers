@@ -82,3 +82,7 @@ const (
 	PlayMoveGas   = 10
 	RejectGameGas = 0
 )
+
+const (
+	StoredGameEventToken = "Token"
+)
