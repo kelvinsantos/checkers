@@ -4,14 +4,14 @@ import { StdFee } from "@cosmjs/launchpad";
 import { SigningStargateClient } from "@cosmjs/stargate";
 import { Registry, OfflineSigner, EncodeObject, DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
 import { Api } from "./rest";
-import { MsgRejectGame } from "./types/checkers/tx";
 import { MsgPlayMove } from "./types/checkers/tx";
+import { MsgRejectGame } from "./types/checkers/tx";
 import { MsgCreateGame } from "./types/checkers/tx";
 
 
 const types = [
-  ["/alice.checkers.checkers.MsgRejectGame", MsgRejectGame],
   ["/alice.checkers.checkers.MsgPlayMove", MsgPlayMove],
+  ["/alice.checkers.checkers.MsgRejectGame", MsgRejectGame],
   ["/alice.checkers.checkers.MsgCreateGame", MsgCreateGame],
   
 ];
@@ -41,8 +41,8 @@ const txClient = async (wallet: OfflineSigner, { addr: addr }: TxClientOptions =
 
   return {
     signAndBroadcast: (msgs: EncodeObject[], { fee, memo }: SignAndBroadcastOptions = {fee: defaultFee, memo: ""}) => client.signAndBroadcast(address, msgs, fee,memo),
-    msgRejectGame: (data: MsgRejectGame): EncodeObject => ({ typeUrl: "/alice.checkers.checkers.MsgRejectGame", value: data }),
     msgPlayMove: (data: MsgPlayMove): EncodeObject => ({ typeUrl: "/alice.checkers.checkers.MsgPlayMove", value: data }),
+    msgRejectGame: (data: MsgRejectGame): EncodeObject => ({ typeUrl: "/alice.checkers.checkers.MsgRejectGame", value: data }),
     msgCreateGame: (data: MsgCreateGame): EncodeObject => ({ typeUrl: "/alice.checkers.checkers.MsgCreateGame", value: data }),
     
   };

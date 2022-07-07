@@ -13,6 +13,12 @@ option go_package = "github.com/alice/checkers/x/checkers/types";
 service Query {
     // this line is used by starport scaffolding # 2
 
+	// Queries a list of canPlayMove items.
+	rpc CanPlayMove(QueryCanPlayMoveRequest) returns (QueryCanPlayMoveResponse) {
+		option (google.api.http).get = "/alice/checkers/checkers/canPlayMove";
+	}
+
+
 	// Queries a storedGame by index.
 	rpc StoredGame(QueryGetStoredGameRequest) returns (QueryGetStoredGameResponse) {
 		option (google.api.http).get = "/alice/checkers/checkers/storedGame/{index}";
@@ -32,6 +38,20 @@ service Query {
 }
 
 // this line is used by starport scaffolding # 3
+message QueryCanPlayMoveRequest {
+  string idValue = 1;
+  string player = 2;
+  uint64 fromX = 3;
+  uint64 fromY = 4;
+  uint64 toX = 5;
+  uint64 toY = 6;
+}
+
+message QueryCanPlayMoveResponse {
+  bool possible = 1;
+  string reason = 2;
+}
+
 message QueryGetStoredGameRequest {
 	string index = 1;
 }
