@@ -84,5 +84,18 @@ const (
 )
 
 const (
+	LeaderboardWinnerLength = 100
+	DateAddedLayout         = DeadlineLayout
+)
+
+const (
 	StoredGameEventToken = "Token"
+)
+
+const (
+	PlayerInfoKey = "PlayerInfo-value-"
+)
+
+const (
+	LeaderboardKey = "Leaderboard-value-"
 )
